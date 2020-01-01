@@ -3,22 +3,24 @@ import Todos from "./components/Todos";
 import Header from "./components/layout/Header";
 import AddTodo from "./components/AddTodo";
 import React, { Component } from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import uuid from "uuid";
 
 export class App extends Component {
     state = {
         todos: [
             {
-                id: 1,
+                id: uuid.v4(),
                 title: "Title 1",
                 completed: false
             },
             {
-                id: 2,
+                id: uuid.v4(),
                 title: "Title 2",
                 completed: true
             },
             {
-                id: 3,
+                id: uuid.v4(),
                 title: "Title 3",
                 completed: false
             }
@@ -43,19 +45,34 @@ export class App extends Component {
             todos: [...this.state.todos.filter(todo => todo.id !== id)]
         });
     };
+
+    addTodo = title => {
+        const new_todo = {
+            id: uuid.v4(),
+            title,
+            completed: false
+        };
+        this.setState({
+            todos: [...this.state.todos, new_todo]
+        });
+    };
+
     render() {
         return (
-            <div className="App">
-                <div className="container">
-                    <Header />
-                    <AddTodo />
-                    <Todos
-                        todos={this.state.todos}
-                        markComplete={this.markComplete}
-                        delTodo={this.delTodo}
-                    />
+            <Router>
+                <div className="App">
+                    <div className="container">
+                        <Header />
+                        <Route path="/" render={props => ()} />
+                        <AddTodo addTodo={this.addTodo} />
+                        <Todos
+                            todos={this.state.todos}
+                            markComplete={this.markComplete}
+                            delTodo={this.delTodo}
+                        />
+                    </div>
                 </div>
-            </div>
+            </Router>
         );
     }
 }
