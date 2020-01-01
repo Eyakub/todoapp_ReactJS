@@ -5,28 +5,21 @@ import AddTodo from "./components/AddTodo";
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import uuid from "uuid";
+import axios from 'axios';
 import About from "./components/pages/About";
 
 export class App extends Component {
     state = {
-        todos: [
-            {
-                id: uuid.v4(),
-                title: "Title 1",
-                completed: false
-            },
-            {
-                id: uuid.v4(),
-                title: "Title 2",
-                completed: true
-            },
-            {
-                id: uuid.v4(),
-                title: "Title 3",
-                completed: false
-            }
-        ]
+        todos: []
     };
+
+    componentDidMount = () => {
+        axios.get('https://jsonplaceholder.typicode.com/todos?_limit=10')
+        .then(res => this.setState({
+            todos: res.data
+        }))
+        .catch(err => console.log(err))
+    }
 
     // Toggle complete
     markComplete = id => {
@@ -41,22 +34,29 @@ export class App extends Component {
     };
 
     delTodo = id => {
-        this.setState({
-            // return any todo that not equal to the clicked one ID
-            todos: [...this.state.todos.filter(todo => todo.id !== id)]
-        });
+        axios.delete(`https://jsonplaceholder.typicode.com/todos/${id}`)
+        .then(res => this.setState({ todos: 
+            [...this.state.todos.filter(todo => todo.id !== id)]}));
+        // this.setState({
+        //     // return any todo that not equal to the clicked one ID
+        //     todos: [...this.state.todos.filter(todo => todo.id !== id)]
+        // });
     };
 
     addTodo = title => {
-        const new_todo = {
-            id: uuid.v4(),
+        // const new_todo = {
+        //     id: uuid.v4(),
+        //     title,
+        //     completed: false
+        // };
+        axios.post('https://jsonplaceholder.typicode.com/todos',{
             title,
             completed: false
-        };
-        this.setState({
-            todos: [...this.state.todos, new_todo]
-        });
-    };
+        })
+        .then(res => this.setState({
+            todos: [...this.state.todos, res.data]
+        }));
+    }
 
     render() {
         return (
