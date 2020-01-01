@@ -5,6 +5,7 @@ import AddTodo from "./components/AddTodo";
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import uuid from "uuid";
+import About from "./components/pages/About";
 
 export class App extends Component {
     state = {
@@ -63,13 +64,21 @@ export class App extends Component {
                 <div className="App">
                     <div className="container">
                         <Header />
-                        <Route path="/" render={props => ()} />
-                        <AddTodo addTodo={this.addTodo} />
-                        <Todos
-                            todos={this.state.todos}
-                            markComplete={this.markComplete}
-                            delTodo={this.delTodo}
+                        <Route
+                            exact
+                            path="/"
+                            render={props => (
+                                <React.Fragment>
+                                    <AddTodo addTodo={this.addTodo} />
+                                    <Todos
+                                        todos={this.state.todos}
+                                        markComplete={this.markComplete}
+                                        delTodo={this.delTodo}
+                                    />
+                                </React.Fragment>
+                            )}
                         />
+                        <Route path="/about" component={About}/>
                     </div>
                 </div>
             </Router>
